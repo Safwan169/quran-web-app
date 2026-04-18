@@ -12,7 +12,7 @@ A production-ready Quran web application with:
 - Frontend: Next.js 14 (App Router), React, Tailwind CSS, TypeScript (strict)
 - Data source: `backend/data/quran.json` (local JSON only)
 - Deploy:
-  - Backend on Railway or Render (no Docker required)
+  - Backend on Vercel, Railway, or Render (no Docker required)
   - Frontend on Vercel (`frontend/vercel.json`)
 
 ## Project Structure
@@ -20,9 +20,12 @@ A production-ready Quran web application with:
 ```text
 .
 |- backend/
+|  |- api/
+|  |  |- [[...route]].ts
 |  |- data/
 |  |  |- quran.json
 |  |- src/
+|  |  |- app.ts
 |  |  |- index.ts
 |  |  |- types.ts
 |  |- package.json
@@ -115,6 +118,31 @@ Searches all verse translations (case-insensitive).
 - Max results: `50`
 - If `q` is missing or fewer than 3 characters: returns `[]`
 
+### `GET /`
+
+Basic deploy check endpoint.
+
+Response example:
+
+```json
+{
+  "message": "Quran API is running."
+}
+```
+
+### `GET /api/health`
+
+Health check endpoint.
+
+Response example:
+
+```json
+{
+  "ok": true,
+  "service": "quran-api"
+}
+```
+
 ## Environment Variables
 
 ### Frontend local
@@ -134,6 +162,20 @@ NEXT_PUBLIC_API_URL=https://your-backend-url.railway.app
 ```
 
 ## Deployment
+
+### Vercel (Backend)
+
+1. Import the repository in Vercel.
+2. Set Root Directory to `backend`.
+3. Framework Preset: `Other`.
+4. Build command: `npm run build`
+5. Output directory: leave empty.
+6. Deploy.
+
+Backend routes will be available at:
+- `https://your-backend-domain.vercel.app/api/surahs`
+- `https://your-backend-domain.vercel.app/api/surah/:id`
+- `https://your-backend-domain.vercel.app/api/search?q=mercy`
 
 ### Railway/Render (Backend)
 
