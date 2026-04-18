@@ -56,6 +56,10 @@ function loadQuranData(): {
 }
 
 const { data: quranData, error: quranDataLoadError } = loadQuranData();
+const deploymentCommit =
+  process.env.VERCEL_GIT_COMMIT_SHA ??
+  process.env.VERCEL_DEPLOYMENT_ID ??
+  "local";
 
 function getQuranDataOrThrow(): Surah[] {
   if (quranDataLoadError) {
@@ -78,6 +82,7 @@ app.get("/", (c) =>
 app.get("/api", (c) =>
   c.json({
     message: "Quran API is running.",
+    commit: deploymentCommit,
   }),
 );
 
@@ -87,6 +92,9 @@ app.get("/api/health", (c) =>
   c.json({
     ok: true,
     service: "quran-api",
+    commit: deploymentCommit,
+    dataLoaded: quranDataLoadError === null,
+    dataError: quranDataLoadError,
   }),
 );
 
