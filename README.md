@@ -1,0 +1,163 @@
+# Quran Web Application
+
+A production-ready Quran web application with:
+- A Bun + Hono backend that serves Quran data from a local JSON file.
+- A Next.js 14 + Tailwind CSS frontend with an elegant Islamic-inspired theme.
+- Surah listing, Surah details, full verse reading, and translation search.
+- Persistent settings (Arabic font + font sizes) stored in localStorage.
+
+## Tech Stack
+
+- Backend: Bun runtime, Node.js, Hono
+- Frontend: Next.js 14 (App Router), React, Tailwind CSS, TypeScript (strict)
+- Data source: `backend/data/quran.json` (local JSON only)
+- Deploy:
+  - Backend on Railway or Render (no Docker required)
+  - Frontend on Vercel (`frontend/vercel.json`)
+
+## Project Structure
+
+```text
+.
+|- backend/
+|  |- data/
+|  |  |- quran.json
+|  |- src/
+|  |  |- index.ts
+|  |  |- types.ts
+|  |- package.json
+|  |- tsconfig.json
+|- frontend/
+|  |- app/
+|  |- components/
+|  |- contexts/
+|  |- lib/
+|  |- types/
+|  |- .env.local
+|  |- .env.production
+|  |- package.json
+|  |- vercel.json
+|- package.json
+|- README.md
+```
+
+## Local Setup
+
+1. Clone the repository.
+2. Download the Quran database JSON first:
+
+```bash
+mkdir -p backend/data
+curl -o backend/data/quran.json https://raw.githubusercontent.com/risan/quran-json/main/data/quran.json
+```
+
+3. Install dependencies:
+
+```bash
+npm install
+npm install --prefix frontend
+bun install --cwd backend
+```
+
+4. Run development servers (backend + frontend together):
+
+```bash
+npm run dev
+```
+
+Backend-only development with Bun:
+
+```bash
+cd backend
+bun run dev
+```
+
+5. Open:
+- Frontend: `http://localhost:3000`
+- Backend API: `http://localhost:3001`
+
+## Backend API
+
+Base URL: `http://localhost:3001`
+
+### `GET /api/surahs`
+
+Returns all 114 surahs without verse arrays.
+
+Response example:
+
+```json
+[
+  {
+    "id": 1,
+    "name": "الفاتحة",
+    "transliteration": "Al-Fatihah",
+    "translation": "The Opener",
+    "type": "meccan",
+    "total_verses": 7
+  }
+]
+```
+
+### `GET /api/surah/:id`
+
+Returns a full surah object including all verses.
+
+- Valid range: `1` to `114`
+- Invalid range or non-integer: `400`
+- Not found: `404`
+
+### `GET /api/search?q=:query`
+
+Searches all verse translations (case-insensitive).
+
+- Returns: `[{ surahId, surahName, verseId, arabicText, translation }]`
+- Max results: `50`
+- If `q` is missing or fewer than 3 characters: returns `[]`
+
+## Environment Variables
+
+### Frontend local
+
+`frontend/.env.local`
+
+```env
+NEXT_PUBLIC_API_URL=http://localhost:3001
+```
+
+### Frontend production
+
+`frontend/.env.production`
+
+```env
+NEXT_PUBLIC_API_URL=https://your-backend-url.railway.app
+```
+
+## Deployment
+
+### Railway/Render (Backend)
+
+1. Create a new service/project from your GitHub repo.
+2. Set Root Directory to `backend`.
+3. Install command: `bun install`
+4. Start command: `bun run start`
+5. Add environment variable if needed:
+   - `PORT=3001`
+6. Deploy and copy the backend URL.
+
+### Vercel (Frontend)
+
+1. Import the repository in Vercel.
+2. Set Root Directory to `frontend`.
+3. Add env var:
+   - `NEXT_PUBLIC_API_URL=https://your-backend-url.railway.app`
+4. Deploy.
+
+## Notes
+
+- The backend loads `backend/data/quran.json` into memory at startup.
+- The frontend uses SSG for:
+  - Home page (`/`)
+  - Surah detail pages (`/surah/[id]`) with `generateStaticParams`
+- Search page (`/search`) is client-side with a 400ms debounce.
+- Settings persist in localStorage under key: `quran-settings`.

@@ -1,0 +1,71 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #0d0d0d;
+  --card: #141414;
+  --border: #2a2a2a;
+  --primary: #c9a84c;
+  --secondary: #8b5e3c;
+  --text-primary: #f5f0e8;
+  --text-muted: #888888;
+  --arabic: #e8d5a3;
+  --arabic-font-size: 28px;
+  --translation-font-size: 16px;
+}
+
+* {
+  border-color: var(--border);
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+}
+
+body {
+  background:
+    radial-gradient(circle at 12% 0%, rgba(201, 168, 76, 0.14), transparent 36%),
+    radial-gradient(circle at 88% 20%, rgba(139, 94, 60, 0.18), transparent 48%),
+    var(--bg);
+  color: var(--text-primary);
+  font-family: var(--font-lato), sans-serif;
+}
+
+.font-heading {
+  font-family: var(--font-playfair), serif;
+}
+
+.arabic-font-dynamic {
+  font-family: var(--font-amiri), serif;
+}
+
+html[data-arabic-font="scheherazade"] .arabic-font-dynamic {
+  font-family: var(--font-scheherazade), serif;
+}
+
+.arabic-size-dynamic {
+  font-size: var(--arabic-font-size);
+}
+
+.translation-size-dynamic {
+  font-size: var(--translation-font-size);
+}
+
+.page-transition {
+  animation: fade-page 420ms ease-out both;
+}
+
+@keyframes fade-page {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
