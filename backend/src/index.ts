@@ -1,6 +1,7 @@
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { HTTPException } from "hono/http-exception";
+import { serve } from "@hono/node-server";
 import rawQuranData from "../data/quran.json";
 import type { SearchResult, Surah, SurahSummary } from "./types";
 
@@ -94,8 +95,7 @@ app.onError((err, c) => {
 
 const port = Number(process.env.PORT ?? 3001);
 console.log(`Quran API is running on http://localhost:${port}`);
-
-export default {
-  port,
+serve({
   fetch: app.fetch,
-};
+  port,
+});

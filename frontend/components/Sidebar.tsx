@@ -31,12 +31,16 @@ export default function Sidebar() {
       <button
         type="button"
         onClick={() => setIsOpen(true)}
-        className="fixed left-4 top-4 z-40 inline-flex items-center justify-center rounded-md border border-border bg-card p-2 text-textPrimary md:hidden"
+        className="fixed left-4 top-4 z-40 inline-flex h-11 w-11 items-center justify-center rounded-lg border border-border bg-card text-textPrimary shadow-sm transition hover:border-primary md:hidden"
         aria-label="Open sidebar menu"
+        aria-expanded={isOpen}
+        aria-controls="app-sidebar"
       >
-        <span className="block h-0.5 w-5 bg-textPrimary" />
-        <span className="ml-0 mt-1 block h-0.5 w-5 bg-textPrimary" />
-        <span className="ml-0 mt-1 block h-0.5 w-5 bg-textPrimary" />
+        <span className="pointer-events-none flex flex-col gap-1.5">
+          <span className="block h-0.5 w-5 rounded-full bg-textPrimary" />
+          <span className="block h-0.5 w-5 rounded-full bg-textPrimary" />
+          <span className="block h-0.5 w-5 rounded-full bg-textPrimary" />
+        </span>
       </button>
 
       {isOpen ? (
@@ -49,6 +53,7 @@ export default function Sidebar() {
       ) : null}
 
       <aside
+        id="app-sidebar"
         className={`fixed bottom-0 left-0 top-0 z-40 flex w-[280px] flex-col border-r border-border bg-card px-5 py-6 transition-transform duration-300 md:translate-x-0 ${
           isOpen ? "translate-x-0" : "-translate-x-full"
         }`}

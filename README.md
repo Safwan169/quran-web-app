@@ -1,14 +1,14 @@
 # Quran Web Application
 
 A production-ready Quran web application with:
-- A Bun + Hono backend that serves Quran data from a local JSON file.
+- A Node.js + Hono backend that serves Quran data from a local JSON file.
 - A Next.js 14 + Tailwind CSS frontend with an elegant Islamic-inspired theme.
 - Surah listing, Surah details, full verse reading, and translation search.
 - Persistent settings (Arabic font + font sizes) stored in localStorage.
 
 ## Tech Stack
 
-- Backend: Bun runtime, Node.js, Hono
+- Backend: Node.js, Hono
 - Frontend: Next.js 14 (App Router), React, Tailwind CSS, TypeScript (strict)
 - Data source: `backend/data/quran.json` (local JSON only)
 - Deploy:
@@ -56,7 +56,7 @@ curl -o backend/data/quran.json https://raw.githubusercontent.com/risan/quran-js
 ```bash
 npm install
 npm install --prefix frontend
-bun install --cwd backend
+npm install --prefix backend
 ```
 
 4. Run development servers (backend + frontend together):
@@ -65,11 +65,11 @@ bun install --cwd backend
 npm run dev
 ```
 
-Backend-only development with Bun:
+Backend-only development:
 
 ```bash
 cd backend
-bun run dev
+npm run dev
 ```
 
 5. Open:
@@ -139,8 +139,8 @@ NEXT_PUBLIC_API_URL=https://your-backend-url.railway.app
 
 1. Create a new service/project from your GitHub repo.
 2. Set Root Directory to `backend`.
-3. Install command: `bun install`
-4. Start command: `bun run start`
+3. Install command: `npm install`
+4. Start command: `npm run start`
 5. Add environment variable if needed:
    - `PORT=3001`
 6. Deploy and copy the backend URL.
@@ -156,8 +156,7 @@ NEXT_PUBLIC_API_URL=https://your-backend-url.railway.app
 ## Notes
 
 - The backend loads `backend/data/quran.json` into memory at startup.
-- The frontend uses SSG for:
-  - Home page (`/`)
-  - Surah detail pages (`/surah/[id]`) with `generateStaticParams`
+- The frontend renders Home (`/`) and Surah detail (`/surah/[id]`) pages dynamically on request.
+- This avoids requiring a live backend during `next build` on Vercel.
 - Search page (`/search`) is client-side with a 400ms debounce.
 - Settings persist in localStorage under key: `quran-settings`.

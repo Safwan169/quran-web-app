@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import VerseCard from "@/components/VerseCard";
-import { getSurah, getSurahs } from "@/lib/api";
+import { getSurah } from "@/lib/api";
 import type { Surah } from "@/types/quran";
 
 interface SurahPageProps {
@@ -17,12 +17,6 @@ function parseSurahId(value: string): number | null {
     return null;
   }
   return parsed;
-}
-
-export async function generateStaticParams() {
-  const surahs = await getSurahs();
-
-  return surahs.map((surah) => ({ id: String(surah.id) }));
 }
 
 export async function generateMetadata({
@@ -50,9 +44,7 @@ export async function generateMetadata({
   }
 }
 
-export const dynamicParams = false;
-export const dynamic = "force-static";
-export const revalidate = false;
+export const dynamic = "force-dynamic";
 
 export default async function SurahPage({ params }: SurahPageProps) {
   const surahId = parseSurahId(params.id);

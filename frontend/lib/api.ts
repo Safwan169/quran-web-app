@@ -27,15 +27,13 @@ async function fetchApi<T>(path: string, init?: NextRequestInit): Promise<T> {
 
 export function getSurahs(): Promise<Surah[]> {
   return fetchApi<Surah[]>("/api/surahs", {
-    cache: "force-cache",
-    next: { revalidate: false },
+    cache: "no-store",
   });
 }
 
 export function getSurah(id: number): Promise<Surah> {
   return fetchApi<Surah>(`/api/surah/${id}`, {
-    cache: "force-cache",
-    next: { revalidate: false },
+    cache: "no-store",
   });
 }
 
