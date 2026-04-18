@@ -170,9 +170,11 @@ NEXT_PUBLIC_API_URL=https://your-backend-url.railway.app
 3. Framework Preset: `Other`.
 4. Build command: `npm run build`
 5. Output directory: leave empty.
-6. Deploy.
+6. Deploy. (`backend/vercel.json` is included to package `data/quran.json` with the function.)
 
 Backend routes will be available at:
+- `https://your-backend-domain.vercel.app/api` (deploy check)
+- `https://your-backend-domain.vercel.app/api/health` (health check)
 - `https://your-backend-domain.vercel.app/api/surahs`
 - `https://your-backend-domain.vercel.app/api/surah/:id`
 - `https://your-backend-domain.vercel.app/api/search?q=mercy`

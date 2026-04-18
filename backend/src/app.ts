@@ -4,12 +4,50 @@ import { HTTPException } from "hono/http-exception";
 import rawQuranData from "../data/quran.json";
 import type { SearchResult, Surah, SurahSummary } from "./types";
 
-const quranData = rawQuranData as Surah[];
+type ImportedQuranData = Surah[] | { default?: Surah[] };
 
-if (!Array.isArray(quranData) || quranData.length !== 114) {
-  throw new Error(
-    "Invalid Quran data. Expected backend/data/quran.json to contain 114 surahs.",
-  );
+function resolveQuranData(source: ImportedQuranData): {
+  data: Surah[];
+  error: string | null;
+} {
+  const normalizedSource =
+    !Array.isArray(source) && source && typeof source === "object" && "default" in source
+      ? source.default
+      : source;
+
+  if (!Array.isArray(normalizedSource)) {
+    return {
+      data: [],
+      error:
+        "Quran data failed to load: invalid JSON import shape. Check deployment bundling for data/quran.json.",
+    };
+  }
+
+  if (normalizedSource.length !== 114) {
+    return {
+      data: [],
+      error: "Invalid Quran data. Expected backend/data/quran.json to contain 114 surahs.",
+    };
+  }
+
+  return {
+    data: normalizedSource,
+    error: null,
+  };
+}
+
+const { data: quranData, error: quranDataLoadError } = resolveQuranData(
+  rawQuranData as ImportedQuranData,
+);
+
+function getQuranDataOrThrow(): Surah[] {
+  if (quranDataLoadError) {
+    throw new HTTPException(500, {
+      message: quranDataLoadError,
+    });
+  }
+
+  return quranData;
 }
 
 const app = new Hono();
@@ -30,7 +68,7 @@ app.get("/api/health", (c) =>
 );
 
 app.get("/api/surahs", (c) => {
-  const surahSummaries: SurahSummary[] = quranData.map((surah) => ({
+  const surahSummaries: SurahSummary[] = getQuranDataOrThrow().map((surah) => ({
     id: surah.id,
     name: surah.name,
     transliteration: surah.transliteration,
@@ -43,6 +81,7 @@ app.get("/api/surahs", (c) => {
 });
 
 app.get("/api/surah/:id", (c) => {
+  const data = getQuranDataOrThrow();
   const rawId = c.req.param("id");
   const surahId = Number(rawId);
 
@@ -52,7 +91,7 @@ app.get("/api/surah/:id", (c) => {
     });
   }
 
-  const surah = quranData.find((entry) => entry.id === surahId);
+  const surah = data.find((entry) => entry.id === surahId);
 
   if (!surah) {
     throw new HTTPException(404, { message: `Surah ${surahId} not found.` });
@@ -62,6 +101,7 @@ app.get("/api/surah/:id", (c) => {
 });
 
 app.get("/api/search", (c) => {
+  const data = getQuranDataOrThrow();
   const query = c.req.query("q")?.trim() ?? "";
 
   if (query.length < 3) {
@@ -71,7 +111,7 @@ app.get("/api/search", (c) => {
   const normalizedQuery = query.toLowerCase();
   const matches: SearchResult[] = [];
 
-  for (const surah of quranData) {
+  for (const surah of data) {
     for (const verse of surah.verses) {
       if (!verse.translation.toLowerCase().includes(normalizedQuery)) {
         continue;
