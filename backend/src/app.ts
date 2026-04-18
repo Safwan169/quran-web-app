@@ -3,7 +3,6 @@ import { cors } from "hono/cors";
 import { HTTPException } from "hono/http-exception";
 import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { fileURLToPath } from "node:url";
 import type { SearchResult, Surah, SurahSummary } from "./types";
 
 function loadQuranData(): {
@@ -11,9 +10,10 @@ function loadQuranData(): {
   error: string | null;
 } {
   const candidates = [
-    fileURLToPath(new URL("../data/quran.json", import.meta.url)),
     resolve(process.cwd(), "data", "quran.json"),
     resolve(process.cwd(), "backend", "data", "quran.json"),
+    resolve("/var/task", "data", "quran.json"),
+    resolve("/var/task", "backend", "data", "quran.json"),
   ];
 
   const quranFilePath = candidates.find((path) => existsSync(path));
@@ -70,6 +70,12 @@ function getQuranDataOrThrow(): Surah[] {
 const app = new Hono();
 
 app.get("/", (c) =>
+  c.json({
+    message: "Quran API is running.",
+  }),
+);
+
+app.get("/api", (c) =>
   c.json({
     message: "Quran API is running.",
   }),
