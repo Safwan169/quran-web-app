@@ -33,12 +33,14 @@ export default function SettingsPanel() {
             type="range"
             min={20}
             max={48}
+            step={1}
             value={settings.arabicFontSize}
             onChange={(event) =>
               updateSettings({
                 arabicFontSize: Number(event.target.value),
               })
             }
+            aria-label="Arabic font size"
             className="w-full accent-primary"
           />
         </div>
@@ -51,12 +53,14 @@ export default function SettingsPanel() {
             type="range"
             min={12}
             max={24}
+            step={1}
             value={settings.translationFontSize}
             onChange={(event) =>
               updateSettings({
                 translationFontSize: Number(event.target.value),
               })
             }
+            aria-label="Translation font size"
             className="w-full accent-primary"
           />
         </div>
@@ -64,3 +68,4 @@ export default function SettingsPanel() {
     </section>
   );
 }
+

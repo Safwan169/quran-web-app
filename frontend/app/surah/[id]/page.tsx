@@ -78,11 +78,11 @@ export default async function SurahPage({ params }: SurahPageProps) {
         <p className="mb-2 text-sm text-primary">Surah {surah.id}</p>
         <h1
           dir="rtl"
-          className="arabic-font-dynamic mb-3 text-right text-4xl leading-[2] text-arabic md:text-5xl"
+          className="arabic-font-dynamic arabic-size-dynamic mb-3 text-right leading-[2] text-arabic"
         >
           {surah.name}
         </h1>
-        <h2 className="font-heading text-2xl text-textPrimary md:text-3xl">
+        <h2 className="font-heading translation-size-dynamic text-textPrimary">
           {surah.translation}
         </h2>
         <p className="mt-2 text-textMuted">
@@ -93,7 +93,7 @@ export default async function SurahPage({ params }: SurahPageProps) {
 
       {surah.id !== 9 ? (
         <section className="rounded-2xl border border-primary/30 bg-primary/10 px-5 py-6 text-center">
-          <p dir="rtl" className="arabic-font-dynamic text-3xl text-primary md:text-4xl">
+          <p dir="rtl" className="arabic-font-dynamic arabic-size-dynamic text-primary">
             بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ
           </p>
         </section>
@@ -128,3 +128,4 @@ export default async function SurahPage({ params }: SurahPageProps) {
     </div>
   );
 }
+

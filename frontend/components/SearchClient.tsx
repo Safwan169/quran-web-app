@@ -141,11 +141,11 @@ export default function SearchClient() {
               </p>
               <p
                 dir="rtl"
-                className="arabic-font-dynamic mb-4 text-right text-3xl leading-[2] text-arabic"
+                className="arabic-font-dynamic arabic-size-dynamic mb-4 text-right leading-[2] text-arabic"
               >
                 {result.arabicText}
               </p>
-              <p className="leading-8 text-textPrimary">
+              <p className="translation-size-dynamic leading-8 text-textPrimary">
                 <HighlightedText text={result.translation} query={debouncedQuery} />
               </p>
             </article>

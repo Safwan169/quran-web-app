@@ -86,14 +86,18 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
       return;
     }
 
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
+    } catch {
+      // Ignore storage failures (private mode/quota) and keep UI responsive.
+    }
   }, [settings]);
 
   const value = useMemo<SettingsContextValue>(
     () => ({
       settings,
       updateSettings: (nextSettings) => {
-        setSettings((prev) => ({ ...prev, ...nextSettings }));
+        setSettings((prev) => normalizeSettings({ ...prev, ...nextSettings }));
       },
     }),
     [settings],

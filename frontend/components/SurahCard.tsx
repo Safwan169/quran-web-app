@@ -26,12 +26,14 @@ export default function SurahCard({ surah }: SurahCardProps) {
 
       <h3
         dir="rtl"
-        className="arabic-font-dynamic mb-2 text-right text-3xl leading-relaxed text-arabic"
+        className="arabic-font-dynamic arabic-size-dynamic mb-2 text-right leading-relaxed text-arabic"
       >
         {surah.name}
       </h3>
 
-      <h4 className="font-heading text-xl text-textPrimary">{surah.translation}</h4>
+      <h4 className="font-heading translation-size-dynamic text-textPrimary">
+        {surah.translation}
+      </h4>
       <p className="mt-1 text-sm text-textMuted">{surah.transliteration}</p>
 
       <div className="mt-4 border-t border-border pt-3 text-sm text-textMuted">
