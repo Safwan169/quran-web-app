@@ -1,44 +1,61 @@
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { HTTPException } from "hono/http-exception";
-import rawQuranData from "../data/quran.json";
+import { existsSync, readFileSync } from "node:fs";
+import { resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import type { SearchResult, Surah, SurahSummary } from "./types";
 
-type ImportedQuranData = Surah[] | { default?: Surah[] };
-
-function resolveQuranData(source: ImportedQuranData): {
+function loadQuranData(): {
   data: Surah[];
   error: string | null;
 } {
-  const normalizedSource =
-    !Array.isArray(source) && source && typeof source === "object" && "default" in source
-      ? source.default
-      : source;
+  const candidates = [
+    fileURLToPath(new URL("../data/quran.json", import.meta.url)),
+    resolve(process.cwd(), "data", "quran.json"),
+    resolve(process.cwd(), "backend", "data", "quran.json"),
+  ];
 
-  if (!Array.isArray(normalizedSource)) {
+  const quranFilePath = candidates.find((path) => existsSync(path));
+
+  if (!quranFilePath) {
     return {
       data: [],
-      error:
-        "Quran data failed to load: invalid JSON import shape. Check deployment bundling for data/quran.json.",
+      error: "Quran data file not found. Expected data/quran.json to be bundled with the function.",
     };
   }
 
-  if (normalizedSource.length !== 114) {
+  try {
+    const fileContent = readFileSync(quranFilePath, "utf-8");
+    const parsed = JSON.parse(fileContent) as unknown;
+
+    if (!Array.isArray(parsed)) {
+      return {
+        data: [],
+        error: "Quran data is invalid. Expected a JSON array in data/quran.json.",
+      };
+    }
+
+    if (parsed.length !== 114) {
+      return {
+        data: [],
+        error: "Invalid Quran data. Expected backend/data/quran.json to contain 114 surahs.",
+      };
+    }
+
+    return {
+      data: parsed as Surah[],
+      error: null,
+    };
+  } catch {
     return {
       data: [],
-      error: "Invalid Quran data. Expected backend/data/quran.json to contain 114 surahs.",
+      error: `Quran data file could not be read: ${quranFilePath}`,
     };
   }
-
-  return {
-    data: normalizedSource,
-    error: null,
-  };
 }
 
-const { data: quranData, error: quranDataLoadError } = resolveQuranData(
-  rawQuranData as ImportedQuranData,
-);
+const { data: quranData, error: quranDataLoadError } = loadQuranData();
 
 function getQuranDataOrThrow(): Surah[] {
   if (quranDataLoadError) {
