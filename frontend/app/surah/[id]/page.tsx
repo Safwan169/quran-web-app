@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import VerseCard from "@/components/VerseCard";
-import { getSurah } from "@/lib/api";
+import { ApiError, getSurah } from "@/lib/api";
 import type { Surah } from "@/types/quran";
 
 interface SurahPageProps {
@@ -37,9 +37,15 @@ export async function generateMetadata({
       title: `${surah.transliteration} (${surah.id})`,
       description: `${surah.translation} (${surah.type}) with all verses and translation.`,
     };
-  } catch {
+  } catch (error: unknown) {
+    if (error instanceof ApiError && error.status === 404) {
+      return {
+        title: "Surah Not Found",
+      };
+    }
+
     return {
-      title: "Surah Not Found",
+      title: "Surah",
     };
   }
 }
@@ -56,8 +62,12 @@ export default async function SurahPage({ params }: SurahPageProps) {
   let surah: Surah;
   try {
     surah = await getSurah(surahId);
-  } catch {
-    notFound();
+  } catch (error: unknown) {
+    if (error instanceof ApiError && error.status === 404) {
+      notFound();
+    }
+
+    throw error;
   }
 
   const previousSurahId = surah.id > 1 ? surah.id - 1 : null;

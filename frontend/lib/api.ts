@@ -7,7 +7,23 @@ type NextRequestInit = RequestInit & {
   };
 };
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_URL ??
+  (process.env.NODE_ENV === "production"
+    ? "https://backend-nine-livid-16.vercel.app"
+    : "http://localhost:3001");
+
+export class ApiError extends Error {
+  status: number;
+  path: string;
+
+  constructor(status: number, path: string) {
+    super(`API request failed (${status}): ${path}`);
+    this.name = "ApiError";
+    this.status = status;
+    this.path = path;
+  }
+}
 
 async function fetchApi<T>(path: string, init?: NextRequestInit): Promise<T> {
   const response = await fetch(`${API_BASE_URL}${path}`, {
@@ -19,7 +35,7 @@ async function fetchApi<T>(path: string, init?: NextRequestInit): Promise<T> {
   });
 
   if (!response.ok) {
-    throw new Error(`API request failed (${response.status}): ${path}`);
+    throw new ApiError(response.status, path);
   }
 
   return (await response.json()) as T;

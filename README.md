@@ -158,7 +158,7 @@ NEXT_PUBLIC_API_URL=http://localhost:3001
 `frontend/.env.production`
 
 ```env
-NEXT_PUBLIC_API_URL=https://your-backend-url.railway.app
+NEXT_PUBLIC_API_URL=https://backend-nine-livid-16.vercel.app
 ```
 
 ## Deployment
@@ -167,10 +167,10 @@ NEXT_PUBLIC_API_URL=https://your-backend-url.railway.app
 
 1. Import the repository in Vercel.
 2. Set Root Directory to `backend`.
-3. Framework Preset: `Other`.
-4. Build command: `npm run build`
+3. Keep the detected Framework Preset (Hono is fine).
+4. Build command: leave default.
 5. Output directory: leave empty.
-6. Deploy. (`backend/vercel.json` is included to package `data/quran.json` with the function.)
+6. Deploy.
 
 Backend routes will be available at:
 - `https://your-backend-domain.vercel.app/api` (deploy check)
@@ -194,7 +194,7 @@ Backend routes will be available at:
 1. Import the repository in Vercel.
 2. Set Root Directory to `frontend`.
 3. Add env var:
-   - `NEXT_PUBLIC_API_URL=https://your-backend-url.railway.app`
+  - `NEXT_PUBLIC_API_URL=https://backend-nine-livid-16.vercel.app`
 4. Deploy.
 
 ## Notes
